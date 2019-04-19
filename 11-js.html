@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>11 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Change for development ref
+        <script src="https://unpkg.com/react@16.3.1/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.production.min.js"></script>
+    -->
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      function Buttons({
+        onclickEvent = "",
+        buttonStyles = "",
+        text = "button"
+      }) {
+        return (
+          <button onClick={onclickEvent} style={buttonStyles}>
+            {text}
+          </button>
+        );
+      }
+
+      //Clase cronometro.
+      class StopWatch extends React.Component {
+        //Inicializo el estado.
+        state = { lapse: 0, running: false };
+
+        //Funcion para iniciar/parar el cronometro.
+        handleRunClick = () => {
+          //No entiendo muy bien que es setState
+          //Entiendo que es propio de react
+          //como si tuviesen las propiedades de setter y getter
+          //Pero no estoy seguro de ello.
+          //Preguntar a Gallardo.
+          this.setState(state => {
+            //Compruebo si el estado running esta a true o a false
+            if (state.running) {
+              //Si esta a true paramos el set interval.
+              clearInterval(this.timer);
+            } else {
+              //Si esta a false iniciamos el cronometro.
+              //De q tiempo empezar fecha actual - el time lapse.
+              const startTime = Date.now() - this.state.lapse;
+
+              //Por cada ms realiza un intervalo y nos guardamos el tiempo.
+              this.timer = setInterval(() => {
+                //Actualizamos cada ms el lapse.
+                this.setState({ lapse: Date.now() - startTime }, () => {
+                  //Show lapse
+                  console.log(this.state.lapse);
+                });
+              });
+            }
+            //devuelvo el contrario de el stado.
+            return { running: !state.running };
+          });
+        };
+
+        //Funcion para resetear y parar el cronometro.
+        handleClearClick = () => {
+          clearInterval(this.timer);
+          this.setState({ lapse: 0, running: false });
+        };
+
+        //Evita la perdida de momoria al elimar un componente.
+        //gallardo
+        componentWillUnmount() {
+          clearInterval(this.timer);
+        }
+
+        render() {
+          const { lapse, running } = this.state;
+
+          //Styles buttons.
+          const buttonStyles = {
+            border: "1px solid #ccc",
+            background: "#fff",
+            fontSize: "2em",
+            padding: 15,
+            margin: 5,
+            width: 200
+          };
+
+          //Style labels.
+          const labelStyles = {
+            fontSize: "5em",
+            display: "block"
+          };
+
+          return (
+            <div style={{ textAling: "center" }}>
+              <label style={labelStyles}>{lapse}ms</label>
+              <Buttons
+                onclickEvent={this.handleRunClick}
+                buttonStyles={{ ...buttonStyles, backgroundColor: "blue" }}
+                text={running ? "Stop" : "Start"}
+              />
+              <Buttons
+                onclickEvent={this.handleClearClick}
+                buttonStyles={{ ...buttonStyles, backgroundColor: "red" }}
+                text="Clear"
+              />
+            </div>
+          );
+        }
+      }
+
+      class App extends React.Component {
+        state = { showStopWatch: true };
+        render() {
+          const { showStopWatch } = this.state;
+          return (
+            <div>
+              <label>
+                Show Stop Watch{" "}
+                <input
+                  type="checkbox"
+                  checked={showStopWatch}
+                  onChange={() =>
+                    this.setState(s => ({
+                      showStopWatch: !s.showStopWatch
+                    }))
+                  }
+                />
+              </label>
+              <hr />
+              {showStopWatch ? <StopWatch /> : null}
+            </div>
+          );
+        }
+      }
+
+      const element = <App />;
+      ReactDOM.render(element, rootElement);
+    </script>
+  </body>
+</html>

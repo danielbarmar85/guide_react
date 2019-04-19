@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>05 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="main.js"></script>
+    -->
+</head>
+<body>
+    <div id='root'></div>
+    <!-- Change for development ref
+        <script src="https://unpkg.com/react@16.3.1/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.production.min.js"></script>
+    -->
+
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+
+        const rootElement = document.getElementById('root')
+
+        /*
+            function SayHello(props) {
+                return (
+                    <div>
+                        Hello {props.firstName} {props.lastName}!
+                    </div>
+                )
+            }
+
+            ReactDOM.render(
+                <SayHello firstName={true} />,
+                document.getElementById('root')
+            )
+        */
+
+        //Convert arrow function.
+        /*
+            const SayHello = props => <div> Hello {props.firstName} {props.lastName}! </div>
+            
+            ReactDOM.render(
+                <SayHello firstName={true} />,
+                document.getElementById('root')
+            )
+        */
+
+        //Add propTypes.
+
+        /*
+            const SayHello = props => <div> Hello {props.firstName} {props.lastName}! </div>
+            
+            SayHello.propTypes = {
+                firstName(props, propName, componentName){
+                    if (typeof props[propName] !== 'string') {
+                        return new Error(
+                            `Hey, you should pass a string for ${propName} in ${componentName}, but you passed a ${typeof props[propName]}!`
+                        )
+                    }
+                }
+            }
+        */
+
+        //Otra forma de verlo mejor indicando que cada argumento ha de ser string y requerido.
+        /*
+            const SayHello = props => <div> Hello {props.firstName} {props.lastName}! </div>
+            
+            
+            SayHello.propTypes = {
+                firstName: PropTypes.string.isRequired,
+                lastName: PropTypes.string.isRequired,
+            }
+        */
+
+        //Forma bonita de utilizar los prototipos.
+        class SayHello extends React.Component {
+            static propTypes = {
+                firstName: PropTypes.string.isRequired,
+                lastName: PropTypes.string.isRequired,
+            }
+
+            render() {
+                const {firstName, lastName} = this.props
+                return (
+                    <div>
+                        Hello {firstName} {lastName}!
+                    </div>
+                )
+            }
+        }
+
+        const element = <SayHello firstName='JOJO' lastName='Potatoes' />
+
+        ReactDOM.render(element, rootElement)
+    </script>
+</body>
+</html>

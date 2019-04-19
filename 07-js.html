@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>07 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="main.js"></script>
+    -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="root_test"></div>
+    <!-- Change for development ref
+        <script src="https://unpkg.com/react@16.3.1/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.production.min.js"></script>
+    -->
+
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+      const rootElement2 = document.getElementById("root_test");
+      //forma con react de crear un reloj que se actualiza por el setimeout cada 1 seg.
+      function tick() {
+        const time = new Date().toLocaleTimeString()
+        const element = (
+            <div> 
+            It is
+            <input value={time} />
+            <input value={time} />
+            </div>
+        )
+        ReactDOM.render(element, rootElement)
+      }
+
+      //Forma sin react actualiza todo el div.
+      function tick_no_react() {
+        const time = new Date().toLocaleTimeString();
+        const element = `
+            <div> 
+            It is
+            <input value="${time}" />
+            <input value="${time}" />
+            </div>
+        `;
+        rootElement2.innerHTML = element;
+      }
+      tick();
+      tick_no_react();
+      setInterval(() => {
+        tick();
+        tick_no_react();
+      }, 1000);
+    </script>
+  </body>
+</html>
