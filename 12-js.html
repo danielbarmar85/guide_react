@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>12 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+      class Counter extends React.Component {
+        /*
+        constructor(...args) {
+          super(...args);
+          this.state = { count: 0 };
+          //segunda forma de solucionarla añadiendolo directamente al constructor
+          this.handleClick = this.handleClick.bind(this);
+        }
+        */
+        //tercera forma asignarlos de forma publica en la clase
+        state = { count: 0 };
+        //handleClick = this.handleClick.bind(this);
+
+        /*
+            //No funciona por que estas pasando la referencia
+            //de this.hanleClick por eso hay que bindear
+            handleClick() {
+                this.setState(({ count }) => ({
+                    count: count + 1
+                }));
+            }
+
+            render() {
+                return <button onClick={this.handleClick}>{this.state.count}</button>;
+            }
+        */
+
+        /*
+        //Primeara opcion añadiendo el .bind(this)
+        handleClick() {
+          this.setState(({ count }) => ({
+            count: count + 1
+          }));
+        }
+
+        render() {
+          return <button onClick={this.handleClick.bind(this)}>{this.state.count}</button>;
+        }
+
+        handleClick() {
+          this.setState(({ count }) => ({
+            count: count + 1
+          }));
+        }
+        */
+
+        //Cuarta forma añadiendole el bind directmente a la funcion
+        /*handleClick = function() {
+          this.setState(({ count }) => ({
+            count: count + 1
+          }));
+        }.bind(this);*/
+
+        //Arrow function que ya por defecto bindea
+        handleClick = () => {
+          this.setState(({ count }) => ({
+            count: count + 1
+          }));
+        };
+
+        render() {
+          return <button onClick={this.handleClick}>{this.state.count}</button>;
+        }
+      }
+
+      const element = <Counter />;
+      ReactDOM.render(element, rootElement);
+    </script>
+  </body>
+</html>
