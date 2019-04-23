@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>16 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+      //Repasar filter, map, includes, Array.from
+      //Tengo mas dificultad que en entender el ejercicio.
+      class FormInputTextMulti extends React.Component {
+        static availableOptions = [
+          "apple",
+          "grape",
+          "cherry",
+          "orange",
+          "pear",
+          "peach"
+        ];
+
+        state = {
+          multiline: "",
+          commaSeparated: "",
+          multiSelect: []
+        };
+
+        handleCommaSeparatedChanged = event => {
+          const { value } = event.target;
+          const allVals = value
+            .split(",")
+            .map(v => v.trim())
+            .filter(Boolean);
+          this.setState({
+            commaSeparated: value,
+            multiline: allVals.join("\n"),
+            multiSelect: allVals.filter(v =>
+              FormInputTextMulti.availableOptions.includes(v)
+            )
+          });
+        };
+
+        handleMultilineChanged = event => {
+          const { value } = event.target;
+          const allVals = value
+            .split("\n")
+            .map(v => v.trim())
+            .filter(Boolean);
+          this.setState({
+            commaSeparated: allVals.join(","),
+            multiline: value,
+            multiSelect: allVals.filter(v =>
+              FormInputTextMulti.availableOptions.includes(v)
+            )
+          });
+        };
+
+        handleMultiSelectChanged = event => {
+          const allVals = Array.from(event.target.selectedOptions).map(
+            o => o.value
+          );
+          this.setState({
+            commaSeparated: allVals.join(","),
+            multiline: allVals.join("\n"),
+            multiSelect: allVals
+          });
+        };
+
+        render() {
+          //Inicializa las variables
+          //el key del option imagino que es como un selected???
+          const { commaSeparated, multiline, multiSelect } = this.state;
+          return (
+            <form onSubmit={this.handleSubmit}>
+              <div>
+                <label>
+                  comma separated values:
+                  <br />
+                  <input
+                    type="text"
+                    value={commaSeparated}
+                    onChange={this.handleCommaSeparatedChanged}
+                  />
+                </label>
+              </div>
+
+              <div>
+                <label>
+                  multiline values:
+                  <br />
+                  <textarea
+                    type="text"
+                    value={multiline}
+                    rows={FormInputTextMulti.availableOptions.length}
+                    onChange={this.handleMultilineChanged}
+                  />
+                </label>
+              </div>
+
+              <div>
+                <label>
+                  multiSelect values:
+                  <br />
+                  <select
+                    multiple
+                    value={multiSelect}
+                    size={FormInputTextMulti.availableOptions.length}
+                    onChange={this.handleMultiSelectChanged}
+                  >
+                    {FormInputTextMulti.availableOptions.map(optionValue => (
+                      <option key={optionValue} value={optionValue}>
+                        {optionValue}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </form>
+          );
+        }
+      }
+
+      const element = <FormInputTextMulti />;
+      ReactDOM.render(element, rootElement);
+    </script>
+  </body>
+</html>
