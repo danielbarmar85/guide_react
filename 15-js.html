@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>15 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      class NameForm extends React.Component {
+        state = { error: null };
+        handleSubmit = event => {
+          event.preventDefault();
+          const value = event.target.elements.username.value;
+          const error = this.props.getErrorMessage(value);
+          if (error) {
+            alert(`error: ${error}`);
+          } else {
+            alert(`success: ${value}`);
+          }
+        };
+
+        //compruebas que el target pasado en el onchange
+        //cumple lo que requiere la funcion de error
+        handleChange = event => {
+          const { value } = event.target;
+          //Setea el estado
+          this.setState({
+            error: this.props.getErrorMessage(value)
+          });
+        };
+
+        //Para antes de de que inicie el handlechange
+        //ya deshabilite el boton.
+        componentDidMount() {
+          //Setea el estado
+          this.setState({
+            error: this.props.getErrorMessage("")
+          });
+        }
+
+        render() {
+          //añades el estado a una variable
+          const { error } = this.state;
+          return (
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                Name:
+                <input
+                  type="text"
+                  name="username"
+                  //Añades una propiedad al objeto
+                  ref={node => {
+                    this.inputName = node;
+                  }}
+                  //Cuando produces onchange
+                  onChange={this.handleChange}
+                />
+              </label>
+              <button
+                //casteas el valor para true or false
+                disabled={Boolean(error)}
+                type="submit"
+              >
+                Submit
+              </button>
+            </form>
+          );
+        }
+      }
+
+      const getErrorMessage = value => {
+        if (value.length < 3) {
+          return `Value must be at least 3 characters, but is only 2`;
+        }
+        if (!value.includes("s")) {
+          return `Value does not include "s" but if should!`;
+        }
+        return null;
+      };
+
+      const element = <NameForm getErrorMessage={getErrorMessage} />;
+      ReactDOM.render(element, rootElement);
+    </script>
+  </body>
+</html>
