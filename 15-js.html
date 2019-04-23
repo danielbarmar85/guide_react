@@ -66,6 +66,8 @@
                   onChange={this.handleChange}
                 />
               </label>
+              {//Muestra el error.
+              error ? <div style={{ color: "red" }}>{error}</div> : null}
               <button
                 //casteas el valor para true or false
                 disabled={Boolean(error)}
