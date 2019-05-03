@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>18 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+    <script src="https://unpkg.com/axios@0.16.2/dist/axios.min.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      class UserCompany extends React.Component {
+        //state
+        state = { company: undefined, loaded: false };
+        //Funcion para cargar la compañia de un usuario de github.
+        fetchCompany = () => {
+          axios({
+            url: "https://api.github.com/graphql",
+            method: "post",
+            data: {
+              query: `{
+                user(login: "${this.props.username}") {
+                    company
+                }
+              }`
+            },
+            headers: {
+              Authorization: `bearer (se añade aqui el token para poder acceder)`
+            }
+          }).then(
+            response => {
+              this.setState({
+                loaded: true,
+                company: response.data.data.user.company
+              });
+            },
+            error => {
+              this.setState({
+                error,
+                loaded: true
+              });
+            }
+          );
+        };
+
+        //Llama ala funcion de dame compañia
+        componentDidMount() {
+          this.fetchCompany();
+        }
+
+        //Mismo que lo anterior
+        componentDidUpdate(prevProps) {
+          if (prevProps.username !== this.props.username) {
+            this.fetchCompany();
+          }
+        }
+
+        //En el render muestra los posibles errores
+        // y si no carga la compañia si existiese o pone unknown
+        render() {
+          return this.state.loaded
+            ? this.state.error
+              ? "ERROR (You probably need to add your own token)"
+              : this.state.company || "Unknown"
+            : "...";
+        }
+      }
+
+      class App extends React.Component {
+        // El estado de username
+        state = { username: undefined };
+        // Maneja el submit para setear en username el valor escrito en el input
+        handleSubmit = e => {
+          e.preventDefault();
+          this.setState({
+            username: this.inputNode.value
+          });
+        };
+
+        // En el render pinta un form con un input y llama a la clase UserCompany
+        // para extraer el nombre de la compañia  del usuario q se ha añadido en el input.
+        // siempre y cuando úsername tenga algun valor sino no hace nada.
+        render() {
+          const { username } = this.state;
+          return (
+            <div>
+              <form onSubmit={this.handleSubmit}>
+                <input ref={node => (this.inputNode = node)} />
+              </form>
+              {username ? <UserCompany username={username} /> : null}
+            </div>
+          );
+        }
+      }
+
+      const element = <App />;
+      ReactDOM.render(element, rootElement);
+    </script>
+  </body>
+</html>
