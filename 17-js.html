@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>17 React Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      class App extends React.Component {
+        static allItems = [
+          { id: "a", value: "apple" },
+          { id: "o", value: "orange" },
+          { id: "g", value: "grape" },
+          { id: "p", value: "pear" }
+        ];
+
+        // En este caso mostrara warning, ya que para react es necesario que tosdos los elementos tengan un ID
+        /*
+            render() {
+            return (
+                <div>
+                {App.allItems.map(item => (
+                    <div>{item.value}</div>
+                ))}
+                </div>
+            );
+            }
+        */
+
+        // Con esto desaparecería el warning al añadirle una key.
+        /*
+            render() {
+            return (
+                <div>
+                {App.allItems.map(item => (
+                    <div key={item.id}>{item.value}</div>
+                ))}
+                </div>
+            );
+            }
+        */
+
+        //Otra forma de verlo es añadiendo direntes input que al añadir o eliminar
+        //los input mantienen el resultado escrito segun la posición no el input
+        //que as escrito para que esto se mantenga se anade al div key={i.id},
+        //Con ello conseguimos que se mantenga el valor del input al borrar uno previo.
+        /*
+        state = { items: [] };
+
+        addItem = () => {
+          this.setState(({ items }) => ({
+            items: [...items, App.allItems.find(i => !items.includes(i))]
+          }));
+        };
+
+        removeItem = item => {
+          this.setState(({ items }) => ({
+            items: items.filter(i => i !== item)
+          }));
+        };
+
+        render() {
+          const { items } = this.state;
+          return (
+            <div>
+              <button
+                disabled={items.length >= App.allItems.length}
+                onClick={this.addItem}
+              >
+                +
+              </button>
+              {items.map((i, index) => (
+                <div key={i.id}>
+                  <button onClick={() => this.removeItem(i)}>-</button>
+                  {i.value}:
+                  <input />
+                </div>
+              ))}
+            </div>
+          );
+        }
+        */
+      }
+
+      class FocusDemo extends React.Component {
+        state = {
+          items: [
+            { id: "a", value: "apple" },
+            { id: "o", value: "orange" },
+            { id: "g", value: "grape" },
+            { id: "p", value: "pear" }
+          ]
+        };
+
+        //Lama cada segundo a la funcion random
+        componentDidMount() {
+          setInterval(this.randomizeItems, 1000);
+        }
+
+        //Añade la lista de items de forma random
+        randomizeItems = () => {
+          this.setState(({ items }) => ({
+            items: shuffle(items)
+          }));
+        };
+
+        // Muestra tres formas de añadir los elementos.
+        // La primera sin clave por lo que al intertar seleccionar un input este cambia al segundo.
+        // La segunda se añade la misma clave con lo cual pasa lo mismo que lo anterior.
+        // La tercera es una clave unica con lo cual si seleccionas el input
+        // este va variando a la vez de ser seleccionado.
+        render() {
+          return (
+            <div>
+              <div>
+                <h1>Without Key</h1>
+                {this.state.items.map(item => (
+                  <input value={item.value} />
+                ))}
+              </div>
+              <div>
+                <h1>With Key as Index</h1>
+                {this.state.items.map((item, index) => (
+                  <input key={index} value={item.value} />
+                ))}
+              </div>
+              <div>
+                <h1>With Key</h1>
+                {this.state.items.map(item => (
+                  <input key={item.id} value={item.value} />
+                ))}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      function shuffle(array) {
+        var currentIndex = array.length,
+          temporaryValue,
+          randomIndex;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
+      }
+
+      const element = <FocusDemo />;
+      ReactDOM.render(element, rootElement);
+    </script>
+  </body>
+</html>
